@@ -22,10 +22,21 @@ class _NewPageState extends State<NewPage> {
   String _currentLocaleId = "";
   final SpeechToText speech = SpeechToText();
 
+  final _controller = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     initSpeechState();
+    _controller.addListener(() {
+      final text = _controller.text;
+      _controller.value = _controller.value.copyWith(
+        text: lastWords,
+        selection:
+        TextSelection(baseOffset: text.length, extentOffset: text.length),
+        composing: TextRange.empty,
+      );
+    });
   }
 
   Future<void> initSpeechState() async {
@@ -43,29 +54,36 @@ class _NewPageState extends State<NewPage> {
     });
   }
 
+  bool toggle = true;
+
+  void change() {
+    setState(() {
+      toggle = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.cyan,
-      appBar: AppBar(
-        backgroundColor: Colors.teal.shade300,
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()));
-            },
-          ),
-        ],
-        title: Text('VOICE PRESCRIPTION'),
-      ),
-      body: Container(
-          padding: EdgeInsets.only(top: 20.0),
-          color: Colors.lightBlueAccent,
-          child: Column(
-            children: <Widget>[
+        backgroundColor: Colors.cyan,
+        appBar: AppBar(
+          backgroundColor: Colors.teal.shade300,
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomeScreen()));
+              },
+            ),
+          ],
+          title: Text('VOICE PRESCRIPTION'),
+        ),
+        body: Container(
+            padding: EdgeInsets.only(top: 20.0),
+            color: Colors.lightBlueAccent,
+            child: Column(children: <Widget>[
               Text(
                 'Enter Personal Details',
                 style: TextStyle(
@@ -76,122 +94,104 @@ class _NewPageState extends State<NewPage> {
                 ),
               ),
               Card(
-                color: Colors.white,
-                margin: EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                    Text(
-                      "Name",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.blueAccent,
+                  color: Colors.white,
+                  margin: EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10.0,
                       ),
-                    ),
-                    Text(
-                      lastWords,
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.blueAccent,
+                      Text(
+                        "Name",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.blueAccent,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Text(
-                      'Age',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.blueAccent,
+                      GestureDetector(
+                          onTap: change,
+                          child: toggle
+                              ? Text(
+                            lastWords,
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Colors.blueAccent,
+                            ),
+                          )
+                              : TextField(
+                            controller: _controller,
+                          )),
+                      SizedBox(
+                        height: 20.0,
                       ),
-                    ),
-                    TextField(),
-                    SizedBox(
-                      height: 20.0,
-                    ),
-                    Text(
-                      'Gender',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.blueAccent,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            height: 60,
+                            width: 60,
+                            child: FloatingActionButton(
+                              onPressed:
+                              speech.isListening ? stopListening : null,
+                              mini: true,
+                              heroTag: null,
+                              backgroundColor: Colors.red,
+                              child: Icon(
+                                Icons.stop,
+                                size: 40.0,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 40.0,
+                          ),
+                          Container(
+                            height: 80,
+                            width: 80,
+                            child: FloatingActionButton(
+                              onPressed: startListening,
+                              heroTag: "start",
+                              backgroundColor: Colors.white,
+                              child: Icon(
+                                Icons.mic,
+                                color: speech.isListening
+                                    ? Colors.green
+                                    : Colors.blue,
+                                size: 40.0,
+                              ),
+                              autofocus: true,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 40.0,
+                          ),
+                          Container(
+                            height: 60,
+                            width: 60,
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            prescriptionPage()));
+                              },
+                              mini: true,
+                              heroTag: null,
+                              backgroundColor: Colors.green,
+                              child: Icon(
+                                Icons.check,
+                                size: 40.0,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    TextField(),
-                    SizedBox(
-                      height: 10.0,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 60.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 60,
-                    width: 60,
-                    child: FloatingActionButton(
-                      onPressed: speech.isListening ? stopListening : null,
-                      mini: true,
-                      heroTag: null,
-                      backgroundColor: Colors.red,
-                      child: Icon(
-                        Icons.stop,
-                        size: 40.0,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 40.0,
-                  ),
-                  Container(
-                    height: 80,
-                    width: 80,
-                    child: FloatingActionButton(
-                      onPressed: startListening,
-                      heroTag: "start",
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.mic,
-                        color: speech.isListening ? Colors.green : Colors.blue,
-                        size: 40.0,
-                      ),
-                      autofocus: true,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 40.0,
-                  ),
-                  Container(
-                    height: 60,
-                    width: 60,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => prescriptionPage()));
-                      },
-                      mini: true,
-                      heroTag: null,
-                      backgroundColor: Colors.green,
-                      child: Icon(
-                        Icons.check,
-                        size: 40.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          )),
-    );
+                    ],
+                  )),
+            ])));
   }
 
   void startListening() {
