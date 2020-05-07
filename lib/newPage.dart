@@ -25,6 +25,7 @@ class _NewPageState extends State<NewPage> {
   @override
   void initState() {
     super.initState();
+    initSpeechState();
   }
 
   Future<void> initSpeechState() async {
@@ -153,14 +154,12 @@ class _NewPageState extends State<NewPage> {
                     height: 80,
                     width: 80,
                     child: FloatingActionButton(
-                      onPressed: !_hasSpeech || speech.isListening
-                          ? null
-                          : startListening,
+                      onPressed: startListening,
                       heroTag: "start",
                       backgroundColor: Colors.white,
                       child: Icon(
                         Icons.mic,
-                        color: Colors.blue,
+                        color: speech.isListening ? Colors.green : Colors.blue,
                         size: 40.0,
                       ),
                       autofocus: true,
