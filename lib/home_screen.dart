@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voicepres/newPage.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -29,6 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             ListTile(
+              leading: Icon(Icons.filter_list),
+              title: Text('Prescription Record'),
+            ),
+            ListTile(
               leading: Icon(Icons.account_circle),
               title: Text('Doctor Profile'),
             ),
@@ -53,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 FloatingActionButton(
+                  heroTag: null,
                   foregroundColor: Colors.teal,
                   onPressed: () => _scaffoldkey.currentState.openDrawer(),
                   child: Icon(Icons.list),
@@ -97,12 +103,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 100.0,
                         width: 100.0,
                         child: FloatingActionButton.extended(
+                          heroTag: 'start',
                           label: Text(
                             'New Prescription',
                             style:
-                                TextStyle(fontSize: 20.0, color: Colors.white),
+                            TextStyle(fontSize: 20.0, color: Colors.white),
                           ),
-                          onPressed: null,
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (
+                                context) => NewPage()),);
+                          },
                           elevation: 35.0,
                           highlightElevation: 10.0,
                           backgroundColor: Colors.teal,
