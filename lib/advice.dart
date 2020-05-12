@@ -13,7 +13,9 @@ class Advice extends StatelessWidget {
               icon: Icon(Icons.delete),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
+                    MaterialPageRoute(builder: (context) {
+                      return HomeScreen();
+                    }));
               },
             ),
           ],

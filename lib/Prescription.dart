@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'advice.dart';
 import 'home_screen.dart';
 
-class prescriptionPage extends StatelessWidget {
+class PrescriptionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +16,9 @@ class prescriptionPage extends StatelessWidget {
             icon: Icon(Icons.delete),
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()));
+                  MaterialPageRoute(builder: (context) {
+                    return HomeScreen();
+                  }));
             },
           ),
         ],

@@ -1,3 +1,5 @@
+//first page after the New Prescription button is pressed in the home screen.
+
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
@@ -10,7 +12,9 @@ import 'package:voicepres/home_screen.dart';
 
 class NewPage extends StatefulWidget {
   @override
-  _NewPageState createState() => _NewPageState();
+  _NewPageState createState() {
+    return _NewPageState();
+  }
 }
 
 class _NewPageState extends State<NewPage> {
@@ -187,7 +191,7 @@ class _NewPageState extends State<NewPage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          prescriptionPage()));
+                                          PrescriptionPage()));
                             },
                             mini: true,
                             heroTag: null,
@@ -253,3 +257,4 @@ class _NewPageState extends State<NewPage> {
     });
   }
 }
+

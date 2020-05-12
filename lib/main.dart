@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 
-void main() => runApp(VoicePress());
+void main() {
+  runApp(VoicePress());
+}
 
 class VoicePress extends StatelessWidget {
   @override
