@@ -121,7 +121,9 @@ class PrescriptionPage extends StatelessWidget {
                     child: FloatingActionButton(
                       onPressed: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Advice()));
+                            MaterialPageRoute(builder: (context) {
+                              return Advice();
+                            }));
                       },
                       mini: true,
                       heroTag: null,

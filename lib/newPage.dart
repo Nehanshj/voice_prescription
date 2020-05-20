@@ -4,11 +4,14 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+
 import 'package:voicepres/Prescription.dart';
 import 'package:voicepres/home_screen.dart';
+import 'models/database.dart';
 
 class NewPage extends StatefulWidget {
   @override
@@ -16,8 +19,8 @@ class NewPage extends StatefulWidget {
     return _NewPageState();
   }
 }
-
 class _NewPageState extends State<NewPage> {
+  final _formKey = GlobalKey<FormState>();
   bool _hasSpeech = false;
   double level = 0.0; //variables to be used by STT
   String lastWords = ""; //variable used for the STT result output
@@ -26,8 +29,12 @@ class _NewPageState extends State<NewPage> {
   String _currentLocaleId = "";
   final SpeechToText speech = SpeechToText(); //STT object initialization
 
-  final _controller =
-  TextEditingController(); //controller to get the recognised text in textfield
+  final _controller = TextEditingController(); //controller to get the recognised text in textfield
+
+  void addDatabase(Database database){
+    final databaseBox = Hive.box('database');
+    databaseBox .add(database);
+  }
 
   @override
   void initState() {
@@ -75,6 +82,7 @@ class _NewPageState extends State<NewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _formKey,
       backgroundColor: Colors.cyan,
       appBar: AppBar(
         backgroundColor: Colors.teal.shade300,
@@ -190,9 +198,15 @@ class _NewPageState extends State<NewPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          PrescriptionPage()));
-                            },
+                                      builder: (context) {
+                                        return PrescriptionPage();
+                                      }
+                                      )
+                              );// NavigatorPush
+                              _formKey.currentState.save();
+                              final newDatabase = Database(lastWords);
+                              addDatabase(newDatabase);
+                            }, //onPressed
                             mini: true,
                             heroTag: null,
                             backgroundColor: Colors.green,

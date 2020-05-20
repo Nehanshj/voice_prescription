@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
+
+import 'package:voicepres/main.dart';
 import 'package:voicepres/newPage.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -112,8 +116,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             TextStyle(fontSize: 20.0, color: Colors.white),
                           ),
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (
-                                context) => NewPage()),);
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                            FutureBuilder(
+                              future: Hive.openBox('database'),
+                              //ignore: missing_return
+                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                if (snapshot.connectionState == ConnectionState.done) {
+                                  if (snapshot.hasError)
+                                    return Text(snapshot.hasError.toString());
+                                  else
+                                      return NewPage();
+                                }
+                                else
+                                  return HomeScreen();
+                              },
+                            );
+                            return NewPage();
+                                }));
                           },
                           elevation: 35.0,
                           highlightElevation: 10.0,

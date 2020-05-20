@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+
+import 'models/database.dart';
 import 'home_screen.dart';
 
-class Advice extends StatelessWidget {
+class Advice extends StatefulWidget{
+  @override
+  _AdviceState createState() {
+    return _AdviceState();
+  }
+}
+
+class _AdviceState extends State<Advice> {
+  final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,8 +127,9 @@ class Advice extends StatelessWidget {
               SizedBox(
                 height: 63.0,
               ),
-              GestureDetector(
-                onTap: () {},
+              RaisedButton(
+                onPressed: () {
+                },
                 child: Container(
                   child: Center(
                     child: Text(
