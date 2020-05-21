@@ -5,22 +5,26 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 import 'package:voicepres/Prescription.dart';
 import 'package:voicepres/home_screen.dart';
+import 'data/moor_database.dart';
 import 'models/database.dart';
 
 class NewPage extends StatefulWidget {
+  const NewPage({
+    Key key,
+}) : super(key : key);
+
   @override
-  _NewPageState createState() {
-    return _NewPageState();
-  }
+  _NewPageState createState() => _NewPageState();
 }
 class _NewPageState extends State<NewPage> {
-  final _formKey = GlobalKey<FormState>();
+//  final _formKey = GlobalKey<FormState>();
   bool _hasSpeech = false;
   double level = 0.0; //variables to be used by STT
   String lastWords = ""; //variable used for the STT result output
@@ -31,10 +35,10 @@ class _NewPageState extends State<NewPage> {
 
   final _controller = TextEditingController(); //controller to get the recognised text in textfield
 
-  void addDatabase(Database database){
-    final databaseBox = Hive.box('database');
-    databaseBox .add(database);
-  }
+//  void addDatabase(Database database){
+//    final databaseBox = Hive.box('database');
+//    databaseBox .add(database);
+//  }
 
   @override
   void initState() {
@@ -82,7 +86,7 @@ class _NewPageState extends State<NewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _formKey,
+//      key: _formKey,
       backgroundColor: Colors.cyan,
       appBar: AppBar(
         backgroundColor: Colors.teal.shade300,
@@ -195,6 +199,21 @@ class _NewPageState extends State<NewPage> {
                           width: 60,
                           child: FloatingActionButton(
                             onPressed: () {
+                              final database = Provider.of<AppDatabase>(context);
+                              // Because the following param is hardcoded, it will throw error after the first run.
+                              // To avoid it, I uninstall the app every time I run it.
+                              // I think it throws error because id is hardcoded AND is a primary key. Values of no two primary keys can be equal.
+                              final moorDatabaseData = MoorDatabaseData(
+                                id: 1, // make variable for auto incrementation of key
+                                name: lastWords,
+                                age: 10, // make variable to change hardcoded
+                                gender: 'F', // make a variable to change hardcoded
+                                diagnosis: 'lhlih', // change hardcoded with variable diagnosis
+                                prescription: 'sjgf', // change hardcoded with variable prescription
+                                advice: 'gbfj', // change hardcoded with variable advice
+                              );
+                              database.insertMoorDB(moorDatabaseData);
+                              resetValuesAfterSubmit(); // code at the end of this page
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -203,9 +222,9 @@ class _NewPageState extends State<NewPage> {
                                       }
                                       )
                               );// NavigatorPush
-                              _formKey.currentState.save();
-                              final newDatabase = Database(lastWords);
-                              addDatabase(newDatabase);
+//                              _formKey.currentState.save(); // adding into the DB
+//                              final newDatabase = Database(lastWords);
+//                              addDatabase(newDatabase);
                             }, //onPressed
                             mini: true,
                             heroTag: null,
@@ -268,6 +287,13 @@ class _NewPageState extends State<NewPage> {
   void statusListener(String status) {
     setState(() {
       lastStatus = "$status";
+    });
+  }
+
+  // line number 216 code.
+  void resetValuesAfterSubmit() {
+    setState(() {
+      _controller.clear();
     });
   }
 }

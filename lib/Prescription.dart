@@ -4,6 +4,9 @@ import 'advice.dart';
 import 'home_screen.dart';
 
 class PrescriptionPage extends StatelessWidget {
+  String diagnosis; //Var for diagnosis
+  String prescription; // Var for prescription
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

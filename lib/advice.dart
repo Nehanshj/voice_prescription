@@ -14,6 +14,7 @@ class Advice extends StatefulWidget{
 class _AdviceState extends State<Advice> {
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
 
+  String advice; // Var for advice`
 
   @override
   Widget build(BuildContext context) {

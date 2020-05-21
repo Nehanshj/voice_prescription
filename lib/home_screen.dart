@@ -118,20 +118,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                            FutureBuilder(
-                              future: Hive.openBox('database'),
-                              //ignore: missing_return
-                              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                if (snapshot.connectionState == ConnectionState.done) {
-                                  if (snapshot.hasError)
-                                    return Text(snapshot.hasError.toString());
-                                  else
-                                      return NewPage();
-                                }
-                                else
-                                  return HomeScreen();
-                              },
-                            );
+//                            FutureBuilder(
+//                              future: Hive.openBox('database'), /* Box opened */
+//                              /* ignore: missing_return */
+//                              builder: (BuildContext context, AsyncSnapshot snapshot) { /* builder started */
+//                                if (snapshot.connectionState == ConnectionState.done) { /* connection of DB and the program */
+//                                  if (snapshot.hasError) // if error
+//                                    return Text(snapshot.hasError.toString());
+//                                  else /*if no error */
+//                                      return NewPage();
+//                                }
+//                                else /* if connection w/ DB  unsuccessful */
+//                                  return HomeScreen();
+//                              },
+//                            );
                             return NewPage();
                                 }));
                           },
