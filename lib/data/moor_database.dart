@@ -5,9 +5,7 @@ part 'moor_database.g.dart';
 class MoorDatabase extends Table{
   // the last pair of '()' at the end of every line of code is the short of 'call()'
   IntColumn get id => integer().autoIncrement()(); //autoIncrement automatically sets this to primary key. Initializing. ID of the patient
-  TextColumn get name => text()(); // name of the patient
-  IntColumn get age => integer()(); // age of the patient
-  TextColumn get gender => text()(); // gender of the patient
+  TextColumn get patientDetails => text()(); // name of the patient
   TextColumn get diagnosis => text()(); //diagnosis
   TextColumn get prescription => text()(); // prescription
   TextColumn get advice => text()(); // advice

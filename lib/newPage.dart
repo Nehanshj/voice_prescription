@@ -24,7 +24,6 @@ class NewPage extends StatefulWidget {
   _NewPageState createState() => _NewPageState();
 }
 class _NewPageState extends State<NewPage> {
-//  final _formKey = GlobalKey<FormState>();
   bool _hasSpeech = false;
   double level = 0.0; //variables to be used by STT
   String lastWords = ""; //variable used for the STT result output
@@ -34,11 +33,6 @@ class _NewPageState extends State<NewPage> {
   final SpeechToText speech = SpeechToText(); //STT object initialization
 
   final _controller = TextEditingController(); //controller to get the recognised text in textfield
-
-//  void addDatabase(Database database){
-//    final databaseBox = Hive.box('database');
-//    databaseBox .add(database);
-//  }
 
   @override
   void initState() {
@@ -86,7 +80,6 @@ class _NewPageState extends State<NewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-//      key: _formKey,
       backgroundColor: Colors.cyan,
       appBar: AppBar(
         backgroundColor: Colors.teal.shade300,
@@ -200,14 +193,9 @@ class _NewPageState extends State<NewPage> {
                           child: FloatingActionButton(
                             onPressed: () {
                               final database = Provider.of<AppDatabase>(context);
-                              // Because the following param is hardcoded, it will throw error after the first run.
-                              // To avoid it, I uninstall the app every time I run it.
-                              // I think it throws error because id is hardcoded AND is a primary key. Values of no two primary keys can be equal.
                               final moorDatabaseData = MoorDatabaseData(
-                                id: 1, // make variable for auto incrementation of key
-                                name: lastWords,
-                                age: 10, // make variable to change hardcoded
-                                gender: 'F', // make a variable to change hardcoded
+                                // the variable id can be left out as it is set to be auto-incremented
+                                patientDetails: lastWords,
                                 diagnosis: 'lhlih', // change hardcoded with variable diagnosis
                                 prescription: 'sjgf', // change hardcoded with variable prescription
                                 advice: 'gbfj', // change hardcoded with variable advice
@@ -222,9 +210,6 @@ class _NewPageState extends State<NewPage> {
                                       }
                                       )
                               );// NavigatorPush
-//                              _formKey.currentState.save(); // adding into the DB
-//                              final newDatabase = Database(lastWords);
-//                              addDatabase(newDatabase);
                             }, //onPressed
                             mini: true,
                             heroTag: null,
