@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -13,7 +12,6 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'package:voicepres/Prescription.dart';
 import 'package:voicepres/home_screen.dart';
 import 'data/moor_database.dart';
-import 'models/database.dart';
 
 class NewPage extends StatefulWidget {
   const NewPage({

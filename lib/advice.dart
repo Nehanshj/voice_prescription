@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 
-import 'models/database.dart';
 import 'home_screen.dart';
 
 class Advice extends StatefulWidget{

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart' as path_provider;
 
 import 'package:voicepres/main.dart';
 import 'package:voicepres/newPage.dart';
@@ -118,20 +116,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-//                            FutureBuilder(
-//                              future: Hive.openBox('database'), /* Box opened */
-//                              /* ignore: missing_return */
-//                              builder: (BuildContext context, AsyncSnapshot snapshot) { /* builder started */
-//                                if (snapshot.connectionState == ConnectionState.done) { /* connection of DB and the program */
-//                                  if (snapshot.hasError) // if error
-//                                    return Text(snapshot.hasError.toString());
-//                                  else /*if no error */
-//                                      return NewPage();
-//                                }
-//                                else /* if connection w/ DB  unsuccessful */
-//                                  return HomeScreen();
-//                              },
-//                            );
                             return NewPage();
                                 }));
                           },
