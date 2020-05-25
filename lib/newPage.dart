@@ -1,3 +1,5 @@
+//first page after the New Prescription button is pressed in the home screen.
+
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
@@ -6,21 +8,20 @@ import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+
 import 'package:voicepres/Prescription.dart';
 import 'package:voicepres/home_screen.dart';
-
 import 'data/moor_database.dart';
 
 class NewPage extends StatefulWidget {
   const NewPage({
     Key key,
-  }) : super(key: key);
+}) : super(key : key);
 
   @override
   _NewPageState createState() => _NewPageState();
 }
 class _NewPageState extends State<NewPage> {
-//  final _formKey = GlobalKey<FormState>();
   bool _hasSpeech = false;
   double level = 0.0; //variables to be used by STT
   String lastWords = ""; //variable used for the STT result output
@@ -30,11 +31,6 @@ class _NewPageState extends State<NewPage> {
   final SpeechToText speech = SpeechToText(); //STT object initialization
 
   final _controller = TextEditingController(); //controller to get the recognised text in textfield
-
-//  void addDatabase(Database database){
-//    final databaseBox = Hive.box('database');
-//    databaseBox .add(database);
-//  }
 
   @override
   void initState() {
@@ -82,7 +78,6 @@ class _NewPageState extends State<NewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-//      key: _formKey,
       backgroundColor: Colors.cyan,
       appBar: AppBar(
         backgroundColor: Colors.teal.shade300,
@@ -98,155 +93,136 @@ class _NewPageState extends State<NewPage> {
         ],
         title: Text('VOICE PRESCRIPTION'),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-            padding: EdgeInsets.only(top: 20.0),
-            color: Colors.lightBlueAccent,
-            child: Column(children: <Widget>[
-              Text(
-                'Enter Personal Details',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Verdana',
-                ),
+      body: Container(
+          padding: EdgeInsets.only(top: 20.0),
+          color: Colors.lightBlueAccent,
+          child: Column(children: <Widget>[
+            Text(
+              'Enter Personal Details',
+              style: TextStyle(
+                fontSize: 24.0,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Verdana',
               ),
-              Container(
-                width: 500,
-                height: 200,
-                child: Card(
-                  //Main Area
-                    color: Colors.white,
-                    margin: EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-//                      SizedBox(
-//                        height: 10.0,
-//                      ),
-                        Text(
-                          "Name         Age        Gender",
+            ),
+            Card(
+              //Main Area
+                color: Colors.white,
+                margin: EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Text(
+                      "Name",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    GestureDetector(
+                      //to detect taps to toggle
+                        onTap: change,
+                        child: toggle
+                            ? Text(
+                          lastWords,
                           style: TextStyle(
                             fontSize: 18.0,
                             color: Colors.blueAccent,
                           ),
+                        )
+                            : TextField(
+                          controller: _controller,
+                        )),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      //3 button ROW
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          height: 60,
+                          width: 60,
+                          child: FloatingActionButton(
+                            onPressed:
+                            speech.isListening ? stopListening : null,
+                            mini: true,
+                            heroTag:
+                            null,
+                            //3 FAB cant be used together without this
+                            backgroundColor: Colors.red,
+                            child: Icon(
+                              Icons.stop,
+                              size: 40.0,
+                            ),
+                          ),
                         ),
-                        GestureDetector(
-                          //to detect taps to toggle
-                            onTap: change,
-                            child: toggle
-                                ? Text(
-                              lastWords,
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                color: Colors.blueAccent,
-                              ),
-                            )
-                                : TextField(
-                              controller: _controller,
-                            )),
                         SizedBox(
-                          height: 20.0,
+                          width: 40.0,
                         ),
-
+                        Container(
+                          height: 80,
+                          width: 80,
+                          child: FloatingActionButton(
+                            onPressed: startListening,
+                            heroTag: "start",
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              Icons.mic,
+                              color: speech.isListening
+                                  ? Colors.green
+                                  : Colors.blue,
+                              size: 40.0,
+                            ),
+                            autofocus: true,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 40.0,
+                        ),
+                        Container(
+                          height: 60,
+                          width: 60,
+                          child: FloatingActionButton(
+                            onPressed: () {
+                              final database = Provider.of<AppDatabase>(context);
+                              final moorDatabaseData = MoorDatabaseData(
+                                // the variable id can be left out as it is set to be auto-incremented
+                                patientDetails: lastWords,
+                                diagnosis: 'lhlih', // change hardcoded with variable diagnosis
+                                prescription: 'sjgf', // change hardcoded with variable prescription
+                                advice: 'gbfj', // change hardcoded with variable advice
+                              );
+                              database.insertMoorDB(moorDatabaseData);
+                              resetValuesAfterSubmit(); // code at the end of this page
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) {
+                                        return PrescriptionPage();
+                                      }
+                                      )
+                              );// NavigatorPush
+                            }, //onPressed
+                            mini: true,
+                            heroTag: null,
+                            backgroundColor: Colors.green,
+                            child: Icon(
+                              Icons.check,
+                              size: 40.0,
+                            ),
+                          ),
+                        ),
                       ],
-                    )),
-              ),
-              Row(
-                //3 button ROW
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 60,
-                    width: 60,
-                    child: FloatingActionButton(
-                      onPressed:
-                      speech.isListening ? stopListening : null,
-                      mini: true,
-                      heroTag:
-                      null,
-                      //3 FAB cant be used together without this
-                      backgroundColor: Colors.red,
-                      child: Icon(
-                        Icons.stop,
-                        size: 40.0,
-                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 40.0,
-                  ),
-                  Container(
-                    height: 80,
-                    width: 80,
-                    child: FloatingActionButton(
-                      onPressed: startListening,
-                      heroTag: "start",
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.mic,
-                        color: speech.isListening
-                            ? Colors.green
-                            : Colors.blue,
-                        size: 40.0,
-                      ),
-                      autofocus: true,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 40.0,
-                  ),
-                  Container(
-                    height: 60,
-                    width: 60,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        final database = Provider.of<AppDatabase>(context);
-                        // Because the following param is hardcoded, it will throw error after the first run.
-                        // To avoid it, I uninstall the app every time I run it.
-                        // I think it throws error because id is hardcoded AND is a primary key. Values of no two primary keys can be equal.
-                        final moorDatabaseData = MoorDatabaseData( // make variable for auto incrementation of key
-                          name: lastWords,
-                          age: 10,
-                          // make variable to change hardcoded
-                          gender: 'F',
-                          // make a variable to change hardcoded
-                          diagnosis: 'lhlih',
-                          // change hardcoded with variable diagnosis
-                          prescription: 'sjgf',
-                          // change hardcoded with variable prescription
-                          advice: 'gbfj', // change hardcoded with variable advice
-                        );
-                        database.insertMoorDB(moorDatabaseData);
-                        resetValuesAfterSubmit(); // code at the end of this page
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) {
-                                  return PrescriptionPage();
-                                }
-                            )
-                        ); // NavigatorPush
-//                              _formKey.currentState.save(); // adding into the DB
-//                              final newDatabase = Database(lastWords);
-//                              addDatabase(newDatabase);
-                      },
-                      //onPressed
-                      mini: true,
-                      heroTag: null,
-                      backgroundColor: Colors.green,
-                      child: Icon(
-                        Icons.check,
-                        size: 40.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ])),
-      ),
+                  ],
+                )),
+          ])),
     );
   }
 
@@ -274,8 +250,8 @@ class _NewPageState extends State<NewPage> {
   void resultListener(SpeechRecognitionResult result) {
     //Result of STT
     setState(() {
-      lastWords = result.recognizedWords;
-      //lastWords = "${result.recognizedWords} - ${result.finalResult}";
+      //lastWords = result.recognizedWords;
+      lastWords = "${result.recognizedWords} - ${result.finalResult}";
     });
   }
 
@@ -304,3 +280,4 @@ class _NewPageState extends State<NewPage> {
     });
   }
 }
+

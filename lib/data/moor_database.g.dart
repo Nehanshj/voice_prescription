@@ -10,17 +10,13 @@ part of 'moor_database.dart';
 class MoorDatabaseData extends DataClass
     implements Insertable<MoorDatabaseData> {
   final int id;
-  final String name;
-  final int age;
-  final String gender;
+  final String patientDetails;
   final String diagnosis;
   final String prescription;
   final String advice;
   MoorDatabaseData(
       {@required this.id,
-      @required this.name,
-      @required this.age,
-      @required this.gender,
+      @required this.patientDetails,
       @required this.diagnosis,
       @required this.prescription,
       @required this.advice});
@@ -32,10 +28,8 @@ class MoorDatabaseData extends DataClass
     final stringType = db.typeSystem.forDartType<String>();
     return MoorDatabaseData(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
-      age: intType.mapFromDatabaseResponse(data['${effectivePrefix}age']),
-      gender:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}gender']),
+      patientDetails: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}patient_details']),
       diagnosis: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}diagnosis']),
       prescription: stringType
@@ -50,14 +44,8 @@ class MoorDatabaseData extends DataClass
     if (!nullToAbsent || id != null) {
       map['id'] = Variable<int>(id);
     }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    if (!nullToAbsent || age != null) {
-      map['age'] = Variable<int>(age);
-    }
-    if (!nullToAbsent || gender != null) {
-      map['gender'] = Variable<String>(gender);
+    if (!nullToAbsent || patientDetails != null) {
+      map['patient_details'] = Variable<String>(patientDetails);
     }
     if (!nullToAbsent || diagnosis != null) {
       map['diagnosis'] = Variable<String>(diagnosis);
@@ -74,10 +62,9 @@ class MoorDatabaseData extends DataClass
   MoorDatabaseCompanion toCompanion(bool nullToAbsent) {
     return MoorDatabaseCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      age: age == null && nullToAbsent ? const Value.absent() : Value(age),
-      gender:
-          gender == null && nullToAbsent ? const Value.absent() : Value(gender),
+      patientDetails: patientDetails == null && nullToAbsent
+          ? const Value.absent()
+          : Value(patientDetails),
       diagnosis: diagnosis == null && nullToAbsent
           ? const Value.absent()
           : Value(diagnosis),
@@ -94,9 +81,7 @@ class MoorDatabaseData extends DataClass
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return MoorDatabaseData(
       id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      age: serializer.fromJson<int>(json['age']),
-      gender: serializer.fromJson<String>(json['gender']),
+      patientDetails: serializer.fromJson<String>(json['patientDetails']),
       diagnosis: serializer.fromJson<String>(json['diagnosis']),
       prescription: serializer.fromJson<String>(json['prescription']),
       advice: serializer.fromJson<String>(json['advice']),
@@ -107,9 +92,7 @@ class MoorDatabaseData extends DataClass
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
-      'age': serializer.toJson<int>(age),
-      'gender': serializer.toJson<String>(gender),
+      'patientDetails': serializer.toJson<String>(patientDetails),
       'diagnosis': serializer.toJson<String>(diagnosis),
       'prescription': serializer.toJson<String>(prescription),
       'advice': serializer.toJson<String>(advice),
@@ -118,17 +101,13 @@ class MoorDatabaseData extends DataClass
 
   MoorDatabaseData copyWith(
           {int id,
-          String name,
-          int age,
-          String gender,
+          String patientDetails,
           String diagnosis,
           String prescription,
           String advice}) =>
       MoorDatabaseData(
         id: id ?? this.id,
-        name: name ?? this.name,
-        age: age ?? this.age,
-        gender: gender ?? this.gender,
+        patientDetails: patientDetails ?? this.patientDetails,
         diagnosis: diagnosis ?? this.diagnosis,
         prescription: prescription ?? this.prescription,
         advice: advice ?? this.advice,
@@ -137,9 +116,7 @@ class MoorDatabaseData extends DataClass
   String toString() {
     return (StringBuffer('MoorDatabaseData(')
           ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('age: $age, ')
-          ..write('gender: $gender, ')
+          ..write('patientDetails: $patientDetails, ')
           ..write('diagnosis: $diagnosis, ')
           ..write('prescription: $prescription, ')
           ..write('advice: $advice')
@@ -151,21 +128,15 @@ class MoorDatabaseData extends DataClass
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
       $mrjc(
-          name.hashCode,
-          $mrjc(
-              age.hashCode,
-              $mrjc(
-                  gender.hashCode,
-                  $mrjc(diagnosis.hashCode,
-                      $mrjc(prescription.hashCode, advice.hashCode)))))));
+          patientDetails.hashCode,
+          $mrjc(diagnosis.hashCode,
+              $mrjc(prescription.hashCode, advice.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is MoorDatabaseData &&
           other.id == this.id &&
-          other.name == this.name &&
-          other.age == this.age &&
-          other.gender == this.gender &&
+          other.patientDetails == this.patientDetails &&
           other.diagnosis == this.diagnosis &&
           other.prescription == this.prescription &&
           other.advice == this.advice);
@@ -173,49 +144,37 @@ class MoorDatabaseData extends DataClass
 
 class MoorDatabaseCompanion extends UpdateCompanion<MoorDatabaseData> {
   final Value<int> id;
-  final Value<String> name;
-  final Value<int> age;
-  final Value<String> gender;
+  final Value<String> patientDetails;
   final Value<String> diagnosis;
   final Value<String> prescription;
   final Value<String> advice;
   const MoorDatabaseCompanion({
     this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.age = const Value.absent(),
-    this.gender = const Value.absent(),
+    this.patientDetails = const Value.absent(),
     this.diagnosis = const Value.absent(),
     this.prescription = const Value.absent(),
     this.advice = const Value.absent(),
   });
   MoorDatabaseCompanion.insert({
     this.id = const Value.absent(),
-    @required String name,
-    @required int age,
-    @required String gender,
+    @required String patientDetails,
     @required String diagnosis,
     @required String prescription,
     @required String advice,
-  })  : name = Value(name),
-        age = Value(age),
-        gender = Value(gender),
+  })  : patientDetails = Value(patientDetails),
         diagnosis = Value(diagnosis),
         prescription = Value(prescription),
         advice = Value(advice);
   static Insertable<MoorDatabaseData> custom({
     Expression<int> id,
-    Expression<String> name,
-    Expression<int> age,
-    Expression<String> gender,
+    Expression<String> patientDetails,
     Expression<String> diagnosis,
     Expression<String> prescription,
     Expression<String> advice,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (age != null) 'age': age,
-      if (gender != null) 'gender': gender,
+      if (patientDetails != null) 'patient_details': patientDetails,
       if (diagnosis != null) 'diagnosis': diagnosis,
       if (prescription != null) 'prescription': prescription,
       if (advice != null) 'advice': advice,
@@ -224,17 +183,13 @@ class MoorDatabaseCompanion extends UpdateCompanion<MoorDatabaseData> {
 
   MoorDatabaseCompanion copyWith(
       {Value<int> id,
-      Value<String> name,
-      Value<int> age,
-      Value<String> gender,
+      Value<String> patientDetails,
       Value<String> diagnosis,
       Value<String> prescription,
       Value<String> advice}) {
     return MoorDatabaseCompanion(
       id: id ?? this.id,
-      name: name ?? this.name,
-      age: age ?? this.age,
-      gender: gender ?? this.gender,
+      patientDetails: patientDetails ?? this.patientDetails,
       diagnosis: diagnosis ?? this.diagnosis,
       prescription: prescription ?? this.prescription,
       advice: advice ?? this.advice,
@@ -247,14 +202,8 @@ class MoorDatabaseCompanion extends UpdateCompanion<MoorDatabaseData> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (age.present) {
-      map['age'] = Variable<int>(age.value);
-    }
-    if (gender.present) {
-      map['gender'] = Variable<String>(gender.value);
+    if (patientDetails.present) {
+      map['patient_details'] = Variable<String>(patientDetails.value);
     }
     if (diagnosis.present) {
       map['diagnosis'] = Variable<String>(diagnosis.value);
@@ -283,37 +232,15 @@ class $MoorDatabaseTable extends MoorDatabase
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
   }
 
-  final VerificationMeta _nameMeta = const VerificationMeta('name');
-  GeneratedTextColumn _name;
+  final VerificationMeta _patientDetailsMeta =
+      const VerificationMeta('patientDetails');
+  GeneratedTextColumn _patientDetails;
   @override
-  GeneratedTextColumn get name => _name ??= _constructName();
-  GeneratedTextColumn _constructName() {
+  GeneratedTextColumn get patientDetails =>
+      _patientDetails ??= _constructPatientDetails();
+  GeneratedTextColumn _constructPatientDetails() {
     return GeneratedTextColumn(
-      'name',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _ageMeta = const VerificationMeta('age');
-  GeneratedIntColumn _age;
-  @override
-  GeneratedIntColumn get age => _age ??= _constructAge();
-  GeneratedIntColumn _constructAge() {
-    return GeneratedIntColumn(
-      'age',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _genderMeta = const VerificationMeta('gender');
-  GeneratedTextColumn _gender;
-  @override
-  GeneratedTextColumn get gender => _gender ??= _constructGender();
-  GeneratedTextColumn _constructGender() {
-    return GeneratedTextColumn(
-      'gender',
+      'patient_details',
       $tableName,
       false,
     );
@@ -359,7 +286,7 @@ class $MoorDatabaseTable extends MoorDatabase
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, age, gender, diagnosis, prescription, advice];
+      [id, patientDetails, diagnosis, prescription, advice];
   @override
   $MoorDatabaseTable get asDslTable => this;
   @override
@@ -374,23 +301,13 @@ class $MoorDatabaseTable extends MoorDatabase
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
     }
-    if (data.containsKey('name')) {
+    if (data.containsKey('patient_details')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+          _patientDetailsMeta,
+          patientDetails.isAcceptableOrUnknown(
+              data['patient_details'], _patientDetailsMeta));
     } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('age')) {
-      context.handle(
-          _ageMeta, age.isAcceptableOrUnknown(data['age'], _ageMeta));
-    } else if (isInserting) {
-      context.missing(_ageMeta);
-    }
-    if (data.containsKey('gender')) {
-      context.handle(_genderMeta,
-          gender.isAcceptableOrUnknown(data['gender'], _genderMeta));
-    } else if (isInserting) {
-      context.missing(_genderMeta);
+      context.missing(_patientDetailsMeta);
     }
     if (data.containsKey('diagnosis')) {
       context.handle(_diagnosisMeta,
