@@ -8,10 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+
 import 'package:voicepres/Prescription.dart';
 import 'package:voicepres/home_screen.dart';
 
-import 'data/moor_database.dart';
 
 class NewPage extends StatefulWidget {
   const NewPage({
@@ -190,17 +190,6 @@ class _NewPageState extends State<NewPage> {
                           width: 60,
                           child: FloatingActionButton(
                             onPressed: () {
-                              final database = Provider.of<AppDatabase>(context);
-                              final moorDatabaseData = MoorDatabaseData(
-                                // the variable id can be left out as it is set to be auto-incremented
-                                patientDetails: lastWords,
-                                diagnosis: 'DEFAULT',
-                                // change hardcoded with variable diagnosis
-                                prescription: 'DEFAULT',
-                                // change hardcoded with variable prescription
-                                advice: 'DEFAULT', // change hardcoded with variable advice
-                              );
-                              database.insertMoorDB(moorDatabaseData);
                               resetValuesAfterSubmit(); // code at the end of this page
                               Navigator.push(
                                   context,
