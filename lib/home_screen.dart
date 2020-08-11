@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
-import 'package:voicepres/newPage.dart';
+import 'package:voicepres/tab_page.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -195,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                                  return NewPage();
+                                  return TabPage();
                                 }));
                           },
                           elevation: 35.0,

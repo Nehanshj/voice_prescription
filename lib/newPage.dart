@@ -1,19 +1,17 @@
 //first page after the New Prescription button is pressed in the home screen.
 
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
-import 'package:voicepres/Prescription.dart';
-import 'package:voicepres/home_screen.dart';
-
 
 class NewPage extends StatefulWidget {
-
   @override
   _NewPageState createState() => _NewPageState();
 }
+
 class _NewPageState extends State<NewPage> {
   bool _hasSpeech = false;
   double level = 0.0; //variables to be used by STT
@@ -22,14 +20,13 @@ class _NewPageState extends State<NewPage> {
   String lastStatus = "";
   String _currentLocaleId = "";
   final SpeechToText speech = SpeechToText(); //STT object initialization
-  final _controller = TextEditingController(); //controller to get the recognised text in textfield
-
+  TextEditingController _controller =
+      TextEditingController(); //controller to get the recognised text in textfield
 
   @override
   void initState() {
     super.initState();
   }
-
 
   bool toggle = true;
 
@@ -43,35 +40,84 @@ class _NewPageState extends State<NewPage> {
   @override
   Widget build(BuildContext context) {
     var speechProvider = Provider.of<SpeechToTextProvider>(context);
+    _controller.text = " ";
+    int index = 0;
+
+    switchIndex(int ind) {
+      setState(() {
+        index = ind;
+      });
+      print(index);
+    }
 
     return Scaffold(
-      backgroundColor: Colors.cyan,
-      appBar: AppBar(
-        backgroundColor: Colors.teal.shade300,
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()));
-            },
-          ),
-        ],
-        title: Text('VOICE PRESCRIPTION'),
-      ),
+
+      ///bottom bar
+      bottomNavigationBar: CurvedNavigationBar(
+          index: index,
+          height: 60.0,
+          color: Colors.white,
+          buttonBackgroundColor: Colors.white,
+          backgroundColor: Colors.blueAccent,
+          animationCurve: Curves.easeInOut,
+          animationDuration: Duration(milliseconds: 600),
+
+          ///Functions performed
+          onTap: (index) {
+            if (index == 1) {
+              !speechProvider.isAvailable || speechProvider.isListening
+                  ? null
+                  : speechProvider.listen(partialResults: true);
+            } else if (index == 0) {
+              speechProvider.isListening ? speechProvider.stop() : null;
+            } else if (index == 2) {
+//              Navigator.of(context).pushNamed("/detail");
+            }
+            switchIndex(index);
+          },
+          items: [
+
+            ///STOP
+            Icon(Icons.stop,
+              color: Colors.redAccent,
+              size: 40.0,
+            ),
+
+            ///Voice
+            Icon(Icons.keyboard_voice,
+              color: speechProvider.isListening ? Colors.green : Colors.blue,
+              size: 60.0,
+            ),
+
+            ///Go Ahead
+            Icon(Icons.check,
+              color: Colors.green,
+              size: 40.0,
+            ),
+          ]),
+
       body: Container(
           padding: EdgeInsets.only(top: 20.0),
-          color: Colors.lightBlueAccent,
+          color: Colors.amber,
           child: Column(children: <Widget>[
-            Text(
-              'Enter Personal Details',
-              style: TextStyle(
-                fontSize: 24.0,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Verdana',
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Enter Personal Details',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Verdana',
+                  ),
+                ),
+
+                ///Recording GIF
+                speechProvider.isListening ? Image.network(
+                  'https://upload.wikimedia.org/wikipedia/commons/5/53/Loading-red-spot.gif',
+                  height: 80.0, width: 80.0,) : Text(""),
+              ],
             ),
             Card(
               //Main Area
@@ -94,9 +140,8 @@ class _NewPageState extends State<NewPage> {
                     GestureDetector(
                       //to detect taps to toggle
                         onTap: change,
-                        child:
-                        toggle ?
-                        speechProvider.hasResults
+                        child: toggle
+                            ? speechProvider.hasResults
                             ? Text(
                           speechProvider.lastResult.recognizedWords,
                           textAlign: TextAlign.center,
@@ -108,86 +153,9 @@ class _NewPageState extends State<NewPage> {
                     SizedBox(
                       height: 20.0,
                     ),
-                    Row(
-                      //3 button ROW
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          height: 60,
-                          width: 60,
-                          child: FloatingActionButton(
-                            onPressed: speechProvider.isListening
-                                ? () => speechProvider.stop()
-                                : null,
-                            mini: true,
-                            heroTag: null,
-                            //3 FAB cant be used together without this
-                            backgroundColor: Colors.red,
-                            child: Icon(
-                              Icons.stop,
-                              size: 40.0,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 40.0,
-                        ),
-                        Container(
-                          height: 80,
-                          width: 80,
-                          child: FloatingActionButton(
-                            onPressed:
-                            !speechProvider.isAvailable ||
-                                speechProvider.isListening
-                                ? null
-                                : () =>
-                                speechProvider.listen(partialResults: true),
-                            heroTag: "start",
-                            backgroundColor: Colors.white,
-                            child: Icon(
-                              Icons.mic,
-                              color: speech.isListening
-                                  ? Colors.green
-                                  : Colors.blue,
-                              size: 40.0,
-                            ),
-                            autofocus: true,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 40.0,
-                        ),
-                        Container(
-                          height: 60,
-                          width: 60,
-                          child: FloatingActionButton(
-                            onPressed: () {
-                              //  resetValuesAfterSubmit(); // code at the end of this page
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) {
-                                        return PrescriptionPage();
-                                      }
-                                  )
-                              );// NavigatorPush
-                            }, //onPressed
-                            mini: true,
-                            heroTag: null,
-                            backgroundColor: Colors.green,
-                            child: Icon(
-                              Icons.check,
-                              size: 40.0,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 )),
           ])),
     );
   }
-
 }
-
