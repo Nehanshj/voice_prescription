@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:voicepres/main.dart';
+import 'package:provider/provider.dart';
+import 'package:speech_to_text/speech_to_text_provider.dart';
 import 'package:voicepres/newPage.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,15 +12,83 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
+  String _currentLocaleId = "";
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void _setCurrentLocale(SpeechToTextProvider speechProvider) {
+    if (speechProvider.isAvailable) {
+      _currentLocaleId = speechProvider.systemLocale.localeId;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    var speechProvider = Provider.of<SpeechToTextProvider>(context);
+    _setCurrentLocale(speechProvider);
+
+    _switchLang(selectedVal) {
+      setState(() {
+        _currentLocaleId = selectedVal;
+      });
+      print(selectedVal);
+    }
+
+    PopUp() {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+            BorderRadius.circular(20.0)), //this right here
+        child: Container(
+          height: 200,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DropdownButton(
+                  onChanged: (selectedVal) => _switchLang(selectedVal),
+                  value: _currentLocaleId,
+                  items: speechProvider.locales
+                      .map(
+                        (localeName) =>
+                        DropdownMenuItem(
+                          value: localeName.localeId,
+                          child: Text(localeName.name),
+                        ),
+                  )
+                      .toList(),
+                ),
+                SizedBox(
+                  width: 320.0,
+                  child: RaisedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "Save",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    color: const Color(0xFF1BC0C5),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       key: _scaffoldkey,
       backgroundColor: Colors.teal,
       drawer: Drawer(
         child: ListView(
-          children: const <Widget>[
+          children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.teal,
@@ -36,6 +104,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               leading: Icon(Icons.filter_list),
               title: Text('Prescription Record'),
+            ),
+            ListTile(
+                leading: Icon(Icons.format_color_text),
+                title: Text("Change Language"),
+                onTap: () =>
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return PopUp();
+                        }
+                    )
             ),
             ListTile(
               leading: Icon(Icons.account_circle),
@@ -116,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                            return NewPage();
+                                  return NewPage();
                                 }));
                           },
                           elevation: 35.0,

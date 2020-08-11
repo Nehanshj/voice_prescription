@@ -1,22 +1,15 @@
 //first page after the New Prescription button is pressed in the home screen.
 
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:speech_to_text/speech_recognition_error.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-
+import 'package:speech_to_text/speech_to_text_provider.dart';
 import 'package:voicepres/Prescription.dart';
 import 'package:voicepres/home_screen.dart';
 
 
 class NewPage extends StatefulWidget {
-  const NewPage({
-    Key key,
-}) : super(key : key);
 
   @override
   _NewPageState createState() => _NewPageState();
@@ -29,42 +22,14 @@ class _NewPageState extends State<NewPage> {
   String lastStatus = "";
   String _currentLocaleId = "";
   final SpeechToText speech = SpeechToText(); //STT object initialization
-
   final _controller = TextEditingController(); //controller to get the recognised text in textfield
+
 
   @override
   void initState() {
     super.initState();
-    initSpeechState(); //starting the STT as soon as the screen loads
-    _controller.addListener(() {
-      final text = _controller.text;
-      _controller.value = _controller.value.copyWith(
-        text:
-        lastWords,
-        //passing the recognised text from text widget to textfield widget
-        selection: TextSelection(
-            baseOffset: text.length, extentOffset: text.length),
-        //idk
-        composing: TextRange.empty,
-      );
-    });
   }
 
-  Future<void> initSpeechState() async {
-    bool hasSpeech = await speech.initialize(
-        onError: errorListener, onStatus: statusListener);
-    if (hasSpeech) {
-      var systemLocale = await speech
-          .systemLocale(); //taking current system locale i.e. English
-      _currentLocaleId = systemLocale.localeId;
-    }
-
-    if (!mounted) return;
-
-    setState(() {
-      _hasSpeech = hasSpeech;
-    });
-  }
 
   bool toggle = true;
 
@@ -77,6 +42,8 @@ class _NewPageState extends State<NewPage> {
 
   @override
   Widget build(BuildContext context) {
+    var speechProvider = Provider.of<SpeechToTextProvider>(context);
+
     return Scaffold(
       backgroundColor: Colors.cyan,
       appBar: AppBar(
@@ -127,14 +94,14 @@ class _NewPageState extends State<NewPage> {
                     GestureDetector(
                       //to detect taps to toggle
                         onTap: change,
-                        child: toggle
+                        child:
+                        toggle ?
+                        speechProvider.hasResults
                             ? Text(
-                          lastWords,
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.blueAccent,
-                          ),
+                          speechProvider.lastResult.recognizedWords,
+                          textAlign: TextAlign.center,
                         )
+                            : Container()
                             : TextField(
                           controller: _controller,
                         )),
@@ -149,11 +116,11 @@ class _NewPageState extends State<NewPage> {
                           height: 60,
                           width: 60,
                           child: FloatingActionButton(
-                            onPressed:
-                            speech.isListening ? stopListening : null,
+                            onPressed: speechProvider.isListening
+                                ? () => speechProvider.stop()
+                                : null,
                             mini: true,
-                            heroTag:
-                            null,
+                            heroTag: null,
                             //3 FAB cant be used together without this
                             backgroundColor: Colors.red,
                             child: Icon(
@@ -169,7 +136,12 @@ class _NewPageState extends State<NewPage> {
                           height: 80,
                           width: 80,
                           child: FloatingActionButton(
-                            onPressed: startListening,
+                            onPressed:
+                            !speechProvider.isAvailable ||
+                                speechProvider.isListening
+                                ? null
+                                : () =>
+                                speechProvider.listen(partialResults: true),
                             heroTag: "start",
                             backgroundColor: Colors.white,
                             child: Icon(
@@ -190,14 +162,14 @@ class _NewPageState extends State<NewPage> {
                           width: 60,
                           child: FloatingActionButton(
                             onPressed: () {
-                              resetValuesAfterSubmit(); // code at the end of this page
+                              //  resetValuesAfterSubmit(); // code at the end of this page
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) {
                                         return PrescriptionPage();
                                       }
-                                      )
+                                  )
                               );// NavigatorPush
                             }, //onPressed
                             mini: true,
@@ -217,58 +189,5 @@ class _NewPageState extends State<NewPage> {
     );
   }
 
-//Functions used for STT
-  void startListening() {
-    lastWords = "";
-    lastError = "";
-    speech.listen(
-        onResult: resultListener,
-        listenFor: Duration(seconds: 10),
-        localeId: _currentLocaleId,
-        onSoundLevelChange: soundLevelListener,
-        cancelOnError: true,
-        partialResults: true);
-    setState(() {});
-  }
-
-  void stopListening() {
-    speech.stop();
-    setState(() {
-      level = 0.0;
-    });
-  }
-
-  void resultListener(SpeechRecognitionResult result) {
-    //Result of STT
-    setState(() {
-      //lastWords = result.recognizedWords;
-      lastWords = "${result.recognizedWords} - ${result.finalResult}";
-    });
-  }
-
-  void soundLevelListener(double level) {
-    setState(() {
-      this.level = level;
-    });
-  }
-
-  void errorListener(SpeechRecognitionError error) {
-    setState(() {
-      lastError = "${error.errorMsg} - ${error.permanent}";
-    });
-  }
-
-  void statusListener(String status) {
-    setState(() {
-      lastStatus = "$status";
-    });
-  }
-
-  // line number 216 code.
-  void resetValuesAfterSubmit() {
-    setState(() {
-      _controller.clear();
-    });
-  }
 }
 
