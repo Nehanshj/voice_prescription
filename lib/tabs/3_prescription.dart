@@ -1,18 +1,20 @@
-//first page after the New Prescription button is pressed in the home screen.
-
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
 
-class NewPage extends StatefulWidget {
+import '4_advice.dart';
+import '../home_screen.dart';
+
+class PrescriptionPage extends StatefulWidget {
   @override
-  _NewPageState createState() => _NewPageState();
+  _PrescriptionPageState createState() => _PrescriptionPageState();
 }
 
-class _NewPageState extends State<NewPage> {
+class _PrescriptionPageState extends State<PrescriptionPage> {
+  String diagnosis;
+  String prescription;
   bool _hasSpeech = false;
   double level = 0.0; //variables to be used by STT
   String lastWords = ""; //variable used for the STT result output
@@ -21,7 +23,7 @@ class _NewPageState extends State<NewPage> {
   String _currentLocaleId = "";
   final SpeechToText speech = SpeechToText(); //STT object initialization
   TextEditingController _controller =
-      TextEditingController(); //controller to get the recognised text in textfield
+  TextEditingController(); //controller to get the recognised text in textfield
 
   @override
   void initState() {
@@ -30,19 +32,17 @@ class _NewPageState extends State<NewPage> {
 
   bool toggle = true;
 
-
+  void change() {
+    //to change from text to textfield
+    setState(() {
+      toggle = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     var speechProvider = Provider.of<SpeechToTextProvider>(context);
-
-    void change() {
-      //to change from text to textfield
-      setState(() {
-        toggle = false;
-      });
-      _controller.text=speechProvider.lastResult.recognizedWords;
-    }
+    _controller.text = " ";
     int index = 0;
 
     switchIndex(int ind) {
@@ -53,7 +53,6 @@ class _NewPageState extends State<NewPage> {
     }
 
     return Scaffold(
-
       ///bottom bar
       bottomNavigationBar: CurvedNavigationBar(
           index: index,
@@ -92,21 +91,29 @@ class _NewPageState extends State<NewPage> {
             ),
 
             ///Go Ahead
-            Icon(Icons.check,
-              color: Colors.green,
-              size: 40.0,
-            ),
+            FloatingActionButton(
+              child: Icon(Icons.check,
+                color: Colors.green,
+                size: 40.0,
+              ),
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)
+                {
+                  return Advice();
+                }));
+              },
+            )
           ]),
 
       body: Container(
           padding: EdgeInsets.only(top: 20.0),
-          color: Colors.amber,
+          color: Colors.blue,
           child: Column(children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Enter Personal Details',
+                  'Enter Prescription',
                   style: TextStyle(
                     fontSize: 24.0,
                     color: Colors.white,
@@ -118,7 +125,7 @@ class _NewPageState extends State<NewPage> {
                 ///Recording GIF
                 speechProvider.isListening ? Image.network(
                   'https://upload.wikimedia.org/wikipedia/commons/5/53/Loading-red-spot.gif',
-                  height: 80.0, width: 80.0,) : Text(""),
+                  height: 50.0, width: 50.0,) : Text(""),
               ],
             ),
             Card(
@@ -133,7 +140,7 @@ class _NewPageState extends State<NewPage> {
                       height: 10.0,
                     ),
                     Text(
-                      "Name",
+                      "Prescription",
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.blueAccent,
@@ -154,6 +161,7 @@ class _NewPageState extends State<NewPage> {
                         )),
                     SizedBox(
                       height: 20.0,
+                      width: 300,
                     ),
                   ],
                 )),
