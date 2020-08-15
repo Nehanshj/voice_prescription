@@ -30,17 +30,19 @@ class _NewPageState extends State<NewPage> {
 
   bool toggle = true;
 
-  void change() {
-    //to change from text to textfield
-    setState(() {
-      toggle = false;
-    });
-  }
+
 
   @override
   Widget build(BuildContext context) {
     var speechProvider = Provider.of<SpeechToTextProvider>(context);
-    _controller.text = " ";
+
+    void change() {
+      //to change from text to textfield
+      setState(() {
+        toggle = false;
+      });
+      _controller.text=speechProvider.lastResult.recognizedWords;
+    }
     int index = 0;
 
     switchIndex(int ind) {
