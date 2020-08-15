@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:voicepres/Prescription.dart';
+import 'package:voicepres/tabs/1_personal_details.dart';
+import 'package:voicepres/tabs/2_diagnosis.dart';
+import 'package:voicepres/tabs/3_prescription.dart';
+import 'package:voicepres/tabs/4_advice.dart';
+import 'package:voicepres/tabs/5_extra_remarks.dart';
 
-import 'advice.dart';
-import 'newPage.dart';
 
 class TabPage extends StatefulWidget {
   @override
@@ -14,10 +16,10 @@ class _TabPageState extends State<TabPage> {
   Widget build(BuildContext context) {
     final _kTabPages = <Widget>[
       NewPage(),
+      DiagonsisPage(),
       PrescriptionPage(),
       Advice(),
-      Container(),
-      Container()
+      ExtraRemarks()
     ];
 
     final _kTabs = <Tab>[
@@ -25,7 +27,7 @@ class _TabPageState extends State<TabPage> {
       Tab(text: 'Diagnosis'),
       Tab(text: 'Prescription'),
       Tab(text: 'Advice'),
-      Tab(text: 'Extra Remarks'),
+      Tab(text: 'Remarks'),
     ];
 
     return DefaultTabController(
