@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
-import 'package:voicepres/tab_page.dart';
-import 'package:voicepres/tabs/2_diagnosis.dart';
 
 class NewPage extends StatefulWidget {
+  TabController controller;
+
+  NewPage(this.controller);
+
   @override
   _NewPageState createState() => _NewPageState();
 }
@@ -75,7 +77,7 @@ class _NewPageState extends State<NewPage> {
             } else if (index == 0) {
               speechProvider.isListening ? speechProvider.stop() : null;
             } else if (index == 2) {
-//              Navigator.of(context).pushNamed("/detail");
+              widget.controller.animateTo(1);
             }
             switchIndex(index);
           },
@@ -88,22 +90,25 @@ class _NewPageState extends State<NewPage> {
             ),
 
             ///Voice
-            Icon(Icons.keyboard_voice,
+            Icon(
+              Icons.keyboard_voice,
               color: speechProvider.isListening ? Colors.green : Colors.blue,
               size: 60.0,
             ),
 
             ///Go Ahead
-            FloatingActionButton(
-              child: Icon(Icons.check,
+            IconButton(
+              icon: Icon(
+                Icons.check,
                 color: Colors.green,
                 size: 40.0,
               ),
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)
-                {
-                  return TabPage();
-                }));
+              onPressed: () {
+                widget.controller.animateTo(1);
+//                Navigator.push(context, MaterialPageRoute(builder: (context)
+//                {
+//                  return TabPage();
+//                }));
               },
             ),
           ]),

@@ -7,18 +7,40 @@ import 'package:voicepres/tabs/5_extra_remarks.dart';
 
 
 class TabPage extends StatefulWidget {
+//int selectedPage;
+//TabPage(this.selectedPage);
+  const TabPage({Key key}) : super(key: key);
+
   @override
   _TabPageState createState() => _TabPageState();
 }
 
-class _TabPageState extends State<TabPage> {
+class _TabPageState extends State<TabPage> with TickerProviderStateMixin {
+//  final GlobalKey<_TabPageState> tabpage = new GlobalKey<_TabPageState>();
+
+  TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = new TabController(vsync: this, length: 5, initialIndex: 0);
+  }
+
+//
+//  @override
+//  void dispose() {
+//    _tabController.dispose();
+//    super.dispose();
+//  }
+//
+
   @override
   Widget build(BuildContext context) {
     final _kTabPages = <Widget>[
-      NewPage(),
-      DiagonsisPage(),
-      PrescriptionPage(),
-      Advice(),
+      NewPage(_tabController),
+      DiagonsisPage(_tabController),
+      PrescriptionPage(_tabController),
+      Advice(_tabController),
       ExtraRemarks()
     ];
 
@@ -31,6 +53,7 @@ class _TabPageState extends State<TabPage> {
     ];
 
     return DefaultTabController(
+        initialIndex: 0,
         length: 5,
         child: Scaffold(
           appBar: AppBar(
@@ -49,11 +72,13 @@ class _TabPageState extends State<TabPage> {
 //          ),
 //        ],
             bottom: TabBar(
+              controller: _tabController,
               isScrollable: true,
               tabs: _kTabs,
             ),
           ),
           body: TabBarView(
+            controller: _tabController,
             children: _kTabPages,
           ),
         ));

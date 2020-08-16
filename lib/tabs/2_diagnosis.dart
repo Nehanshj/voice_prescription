@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
 
-import '3_prescription.dart';
-import 'package:voicepres/tabs/2_diagnosis.dart';
-
 class DiagonsisPage extends StatefulWidget {
+  TabController controller;
+
+  DiagonsisPage(this.controller);
+
   @override
   _DiagonsisPageState createState() => _DiagonsisPageState();
 }
@@ -72,7 +73,7 @@ class _DiagonsisPageState extends State<DiagonsisPage> {
             } else if (index == 0) {
               speechProvider.isListening ? speechProvider.stop() : null;
             } else if (index == 2) {
-//              Navigator.of(context).pushNamed("/detail");
+              widget.controller.animateTo(2);
             }
             switchIndex(index);
           },
@@ -91,16 +92,17 @@ class _DiagonsisPageState extends State<DiagonsisPage> {
             ),
 
             ///Go Ahead
-            FloatingActionButton(
-              child: Icon(Icons.check,
+            IconButton(
+              icon: Icon(Icons.check,
                 color: Colors.green,
                 size: 40.0,
               ),
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)
-                {
-                  return PrescriptionPage();
-                }));
+              onPressed: () {
+                widget.controller.animateTo(2);
+//                Navigator.push(context, MaterialPageRoute(builder: (context)
+//                {
+//                  return PrescriptionPage();
+//                }));
               },
             )
           ]),

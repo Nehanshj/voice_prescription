@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
-import 'package:voicepres/tab_page.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -12,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
-  String _currentLocaleId = "";
+  String _currentLocaleId = "Select";
 
   @override
   void initState() {
@@ -22,26 +21,27 @@ class _HomeScreenState extends State<HomeScreen> {
   void _setCurrentLocale(SpeechToTextProvider speechProvider) {
     if (speechProvider.isAvailable) {
       _currentLocaleId = speechProvider.systemLocale.localeId;
+      print("Current Locale:$_currentLocaleId");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     var speechProvider = Provider.of<SpeechToTextProvider>(context);
-    _setCurrentLocale(speechProvider);
-
-    _switchLang(selectedVal) {
-      setState(() {
-        _currentLocaleId = selectedVal;
-      });
-      print(selectedVal);
-    }
+    if (_currentLocaleId == "Select") _setCurrentLocale(speechProvider);
 
     PopUp() {
+      _switchLang(selectedVal) {
+        setState(() {
+          _currentLocaleId = selectedVal;
+        });
+        print(selectedVal);
+        print(_currentLocaleId);
+      }
+
       return Dialog(
         shape: RoundedRectangleBorder(
-            borderRadius:
-            BorderRadius.circular(20.0)), //this right here
+            borderRadius: BorderRadius.circular(20.0)), //this right here
         child: Container(
           height: 200,
           child: Padding(
@@ -193,10 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             TextStyle(fontSize: 20.0, color: Colors.white),
                           ),
                           onPressed: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                                  return TabPage();
-                                }));
+                            Navigator.of(context).pushNamed("/tab");
                           },
                           elevation: 35.0,
                           highlightElevation: 10.0,

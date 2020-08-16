@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
+import 'package:voicepres/tab_page.dart';
 
 import 'home_screen.dart';
 
@@ -34,6 +35,16 @@ class _VoicePressState extends State<VoicePress> {
         child: MaterialApp(
           title: 'Voice Prescription App',
           home: HomeScreen(),
+          routes: <String, WidgetBuilder>{
+            "/home": (BuildContext context) => HomeScreen(),
+            "/tab": (BuildContext context) => TabPage(),
+//            "/personal": (BuildContext context) => NewPage(),
+//            "/diagnosis": (BuildContext context) => DiagonsisPage(),
+//            "/prescription": (BuildContext context) => PrescriptionPage(),
+//            "/remarks": (BuildContext context) => ExtraRemarks(),
+//            "/advice": (BuildContext context) => Advice(),
+          },
+          initialRoute: "/home",
         ));
   }
 }

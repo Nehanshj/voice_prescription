@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
 
-import '4_advice.dart';
-import '../home_screen.dart';
-
 class PrescriptionPage extends StatefulWidget {
+  TabController controller;
+
+  PrescriptionPage(this.controller);
+
   @override
   _PrescriptionPageState createState() => _PrescriptionPageState();
 }
@@ -72,7 +73,7 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
             } else if (index == 0) {
               speechProvider.isListening ? speechProvider.stop() : null;
             } else if (index == 2) {
-//              Navigator.of(context).pushNamed("/detail");
+              widget.controller.animateTo(3);
             }
             switchIndex(index);
           },
@@ -85,22 +86,25 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
             ),
 
             ///Voice
-            Icon(Icons.keyboard_voice,
+            Icon(
+              Icons.keyboard_voice,
               color: speechProvider.isListening ? Colors.green : Colors.blue,
               size: 60.0,
             ),
 
             ///Go Ahead
-            FloatingActionButton(
-              child: Icon(Icons.check,
+            IconButton(
+              icon: Icon(
+                Icons.check,
                 color: Colors.green,
                 size: 40.0,
               ),
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)
-                {
-                  return Advice();
-                }));
+              onPressed: () {
+                widget.controller.animateTo(3);
+//                Navigator.push(context, MaterialPageRoute(builder: (context)
+//                {
+//                  return Advice();
+//                }));
               },
             )
           ]),

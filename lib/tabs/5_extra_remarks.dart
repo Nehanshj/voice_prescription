@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
-import '../home_screen.dart';
 
 class ExtraRemarks extends StatefulWidget{
   @override
@@ -89,22 +88,50 @@ class _ExtraRemarksState extends State<ExtraRemarks> {
               ),
 
               ///Voice
-              Icon(Icons.keyboard_voice,
+              Icon(
+                Icons.keyboard_voice,
                 color: speechProvider.isListening ? Colors.green : Colors.blue,
                 size: 60.0,
               ),
 
               ///Go Ahead
-              FloatingActionButton(
-                child: Icon(Icons.check,
+              IconButton(
+                icon: Icon(
+                  Icons.insert_drive_file,
                   color: Colors.green,
                   size: 40.0,
                 ),
-                onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)
-                  {
-                    return ExtraRemarks(); // jahaan bhi jaana hai chale jaana
-                  }));
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          backgroundColor: Colors.amber,
+                          child: Container(
+                            height: 100,
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text("Generating Prescription"),
+                                  CircularProgressIndicator(
+                                    strokeWidth: 8,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      });
+//                  Navigator.push(context, MaterialPageRoute(builder: (context)
+//                  {
+//                    return ExtraRemarks(); // jahaan bhi jaana hai chale jaana
+//                  }));
                 },
               )
             ]),
