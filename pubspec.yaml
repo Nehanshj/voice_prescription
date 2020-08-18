@@ -11,22 +11,17 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.2
-  speech_to_text: ^2.1.0
+  speech_to_text: ^2.4.1
+  curved_navigation_bar: ^0.3.3
 #  path_provider: ^1.6.8
 #  googleapis: ^0.55.0
 #  googleapis_beta: ^0.50.0
   # For UI
   provider: 3.0.0
 
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  build_runner:
-
-sources:
 flutter:
-
   uses-material-design: true
