@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
+import 'package:voicepres/provider/prescription_provider.dart';
 
 class DiagonsisPage extends StatefulWidget {
   TabController controller;
@@ -22,8 +23,8 @@ class _DiagonsisPageState extends State<DiagonsisPage> {
   String lastStatus = "";
   String _currentLocaleId = "";
   final SpeechToText speech = SpeechToText(); //STT object initialization
-  TextEditingController _controller =
-  TextEditingController(); //controller to get the recognised text in textfield
+  TextEditingController _twocontroller =
+      TextEditingController(); //controller to get the recognised text in textfield
 
   @override
   void initState() {
@@ -42,7 +43,9 @@ class _DiagonsisPageState extends State<DiagonsisPage> {
   @override
   Widget build(BuildContext context) {
     var speechProvider = Provider.of<SpeechToTextProvider>(context);
-    _controller.text = " ";
+    var document = Provider.of<PrescriptionProvider>(context);
+
+    _twocontroller.text = " ";
     int index = 0;
 
     switchIndex(int ind) {
@@ -98,6 +101,8 @@ class _DiagonsisPageState extends State<DiagonsisPage> {
                 size: 40.0,
               ),
               onPressed: () {
+                document.addData(
+                    "diagnosis", speechProvider.lastResult.recognizedWords);
                 widget.controller.animateTo(2);
 //                Navigator.push(context, MaterialPageRoute(builder: (context)
 //                {
@@ -158,7 +163,7 @@ class _DiagonsisPageState extends State<DiagonsisPage> {
                         )
                             : Container()
                             : TextField(
-                          controller: _controller,
+                          controller: _twocontroller,
                         )),
                     SizedBox(
                       height: 20.0,

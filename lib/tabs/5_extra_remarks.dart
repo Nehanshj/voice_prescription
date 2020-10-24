@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
+import 'package:voicepres/provider/prescription_provider.dart';
 
 class ExtraRemarks extends StatefulWidget{
   @override
@@ -25,8 +26,8 @@ class _ExtraRemarksState extends State<ExtraRemarks> {
   String lastStatus = "";
   String _currentLocaleId = "";
   final SpeechToText speech = SpeechToText(); //STT object initialization
-  TextEditingController _controller =
-  TextEditingController(); //controller to get the recognised text in textfield
+  TextEditingController _lastcontroller =
+      TextEditingController(); //controller to get the recognised text in textfield
 
   @override
   void initState() {
@@ -45,7 +46,9 @@ class _ExtraRemarksState extends State<ExtraRemarks> {
   @override
   Widget build(BuildContext context) {
     var speechProvider = Provider.of<SpeechToTextProvider>(context);
-    _controller.text = " ";
+    var document = Provider.of<PrescriptionProvider>(context);
+
+    _lastcontroller.text = " ";
     int index = 0;
 
     switchIndex(int ind) {
@@ -102,6 +105,9 @@ class _ExtraRemarksState extends State<ExtraRemarks> {
                   size: 40.0,
                 ),
                 onPressed: () {
+                  document.addData(
+                      "remark", speechProvider.lastResult.recognizedWords);
+                  document.generate();
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -115,7 +121,7 @@ class _ExtraRemarksState extends State<ExtraRemarks> {
                               padding: const EdgeInsets.all(12.0),
                               child: Column(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text("Generating Prescription"),
@@ -136,13 +142,31 @@ class _ExtraRemarksState extends State<ExtraRemarks> {
               )
             ]),
 
-        body: Container(
+      body: Container(
+          padding: EdgeInsets.only(top: 20.0),
           color: Colors.blue,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Card(
+          child: Column(children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Enter Remarks',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Verdana',
+                  ),
+                ),
+
+                ///Recording GIF
+                speechProvider.isListening ? Image.network(
+                  'https://upload.wikimedia.org/wikipedia/commons/5/53/Loading-red-spot.gif',
+                  height: 50.0, width: 50.0,) : Text(""),
+              ],
+            ),
+            Card(
+              //Main Area
                 color: Colors.white,
                 margin: EdgeInsets.all(20.0),
                 child: Column(
@@ -153,93 +177,31 @@ class _ExtraRemarksState extends State<ExtraRemarks> {
                       height: 10.0,
                     ),
                     Text(
-                      'Remarks',
+                      "Advice",
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Colors.blueAccent,
                       ),
                     ),
+                    GestureDetector(
+                      //to detect taps to toggle
+                        onTap: change,
+                        child: toggle
+                            ? speechProvider.hasResults
+                            ? Text(
+                          speechProvider.lastResult.recognizedWords,
+                          textAlign: TextAlign.center,
+                        )
+                            : Container()
+                            : TextField(
+                          controller: _lastcontroller,
+                        )),
                     SizedBox(
-                      height: 120.0,
+                      height: 20.0,
+                      width: 300,
                     ),
-                    TextField(),
                   ],
-                ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 60,
-                    width: 60,
-                    child: FloatingActionButton(
-                      onPressed: null,
-                      mini: true,
-                      heroTag: null,
-                      backgroundColor: Colors.red,
-                      child: Icon(
-                        Icons.stop,
-                        size: 40.0,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 40.0,
-                  ),
-                  Container(
-                    height: 80,
-                    width: 80,
-                  ),
-                  SizedBox(
-                    width: 40.0,
-                  ),
-                  Container(
-                    height: 60,
-                    width: 60,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => ExtraRemarks()));
-                      },
-                      mini: true,
-                      heroTag: null,
-                      backgroundColor: Colors.green,
-                      child: Icon(
-                        Icons.check,
-                        size: 40.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 63.0,
-              ),
-              RaisedButton(
-                onPressed: () {
-                },
-                child: Container(
-                  child: Center(
-                    child: Text(
-                      "GENERATE",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 40.0,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  color: Colors.red,
-                  margin: EdgeInsets.only(top: 10.0),
-                  width: double.infinity,
-                  height: 100.0,
-                ),
-              ),
-            ],
-          ),
-        ));
+                )),
+          ])),);
   }
 }
