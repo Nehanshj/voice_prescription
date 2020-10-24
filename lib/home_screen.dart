@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
+import 'package:voicepres/provider/prescription_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var speechProvider = Provider.of<SpeechToTextProvider>(context);
+    var document = Provider.of<PrescriptionProvider>(context);
     if (_currentLocaleId == "Select") _setCurrentLocale(speechProvider);
 
     PopUp() {
@@ -193,6 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             TextStyle(fontSize: 20.0, color: Colors.white),
                           ),
                           onPressed: () {
+                            document.initPres();
                             Navigator.of(context).pushNamed("/tab");
                           },
                           elevation: 35.0,

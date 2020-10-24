@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
+import 'package:voicepres/provider/prescription_provider.dart';
 
 class Advice extends StatefulWidget {
   TabController controller;
@@ -29,8 +30,8 @@ class _AdviceState extends State<Advice> {
   String lastStatus = "";
   String _currentLocaleId = "";
   final SpeechToText speech = SpeechToText(); //STT object initialization
-  TextEditingController _controller =
-  TextEditingController(); //controller to get the recognised text in textfield
+  TextEditingController _fourcontroller =
+      TextEditingController(); //controller to get the recognised text in textfield
 
   @override
   void initState() {
@@ -49,7 +50,9 @@ class _AdviceState extends State<Advice> {
   @override
   Widget build(BuildContext context) {
     var speechProvider = Provider.of<SpeechToTextProvider>(context);
-    _controller.text = " ";
+    var document = Provider.of<PrescriptionProvider>(context);
+
+    _fourcontroller.text = " ";
     int index = 0;
 
     switchIndex(int ind) {
@@ -104,6 +107,8 @@ class _AdviceState extends State<Advice> {
                   size: 40.0,
                 ),
                 onPressed: () {
+                  document.addData(
+                      "advice", speechProvider.lastResult.recognizedWords);
                   widget.controller.animateTo(4);
 //                  Navigator.push(context, MaterialPageRoute(builder: (context)
 //                  {
@@ -165,7 +170,7 @@ class _AdviceState extends State<Advice> {
                         )
                             : Container()
                             : TextField(
-                          controller: _controller,
+                          controller: _fourcontroller,
                         )),
                     SizedBox(
                       height: 20.0,

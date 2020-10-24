@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
+import 'package:voicepres/provider/prescription_provider.dart';
 
 class PrescriptionPage extends StatefulWidget {
   TabController controller;
@@ -23,8 +24,8 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
   String lastStatus = "";
   String _currentLocaleId = "";
   final SpeechToText speech = SpeechToText(); //STT object initialization
-  TextEditingController _controller =
-  TextEditingController(); //controller to get the recognised text in textfield
+  TextEditingController _threecontroller =
+      TextEditingController(); //controller to get the recognised text in textfield
 
   @override
   void initState() {
@@ -43,7 +44,9 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
   @override
   Widget build(BuildContext context) {
     var speechProvider = Provider.of<SpeechToTextProvider>(context);
-    _controller.text = " ";
+    var document = Provider.of<PrescriptionProvider>(context);
+
+    _threecontroller.text = " ";
     int index = 0;
 
     switchIndex(int ind) {
@@ -100,6 +103,8 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                 size: 40.0,
               ),
               onPressed: () {
+                document.addData(
+                    "prescription", speechProvider.lastResult.recognizedWords);
                 widget.controller.animateTo(3);
 //                Navigator.push(context, MaterialPageRoute(builder: (context)
 //                {
@@ -161,7 +166,7 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                         )
                             : Container()
                             : TextField(
-                          controller: _controller,
+                          controller: _threecontroller,
                         )),
                     SizedBox(
                       height: 20.0,

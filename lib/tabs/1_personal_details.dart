@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
 
+import '../provider/prescription_provider.dart';
+
 class NewPage extends StatefulWidget {
   TabController controller;
 
@@ -24,8 +26,8 @@ class _NewPageState extends State<NewPage> {
   String lastStatus = "";
   String _currentLocaleId = "";
   final SpeechToText speech = SpeechToText(); //STT object initialization
-  TextEditingController _controller =
-  TextEditingController(); //controller to get the recognised text in textfield
+  TextEditingController _onecontroller =
+      TextEditingController(); //controller to get the recognised text in textfield
 
   @override
   void initState() {
@@ -39,13 +41,14 @@ class _NewPageState extends State<NewPage> {
   @override
   Widget build(BuildContext context) {
     var speechProvider = Provider.of<SpeechToTextProvider>(context);
+    var document = Provider.of<PrescriptionProvider>(context);
 
     void change() {
       //to change from text to textfield
       setState(() {
         toggle = false;
       });
-      _controller.text=speechProvider.lastResult.recognizedWords;
+      _onecontroller.text = speechProvider.lastResult.recognizedWords;
     }
     int index = 0;
 
@@ -104,6 +107,8 @@ class _NewPageState extends State<NewPage> {
                 size: 40.0,
               ),
               onPressed: () {
+                document.addData(
+                    "personal", speechProvider.lastResult.recognizedWords);
                 widget.controller.animateTo(1);
 //                Navigator.push(context, MaterialPageRoute(builder: (context)
 //                {
@@ -165,7 +170,7 @@ class _NewPageState extends State<NewPage> {
                         )
                             : Container()
                             : TextField(
-                          controller: _controller,
+                          controller: _onecontroller,
                         )),
                     SizedBox(
                       height: 20.0,
