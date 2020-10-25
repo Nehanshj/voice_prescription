@@ -5,7 +5,9 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_to_text_provider.dart';
 import 'package:voicepres/provider/prescription_provider.dart';
 
-class ExtraRemarks extends StatefulWidget{
+import '../showPrescription.dart';
+
+class ExtraRemarks extends StatefulWidget {
   @override
   _ExtraRemarksState createState() {
     return _ExtraRemarksState();
@@ -100,45 +102,43 @@ class _ExtraRemarksState extends State<ExtraRemarks> {
               ///Go Ahead
               IconButton(
                 icon: Icon(
-                  Icons.insert_drive_file,
-                  color: Colors.green,
-                  size: 40.0,
-                ),
-                onPressed: () {
-                  document.addData(
-                      "remark", speechProvider.lastResult.recognizedWords);
-                  document.generate();
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0)),
-                          backgroundColor: Colors.amber,
-                          child: Container(
-                            height: 100,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text("Generating Prescription"),
-                                  CircularProgressIndicator(
-                                    strokeWidth: 8,
-                                  )
-                                ],
-                              ),
+                Icons.insert_drive_file,
+                color: Colors.green,
+                size: 40.0,
+              ),
+              onPressed: () async {
+                document.addData(
+                    "remarks", speechProvider.lastResult.recognizedWords);
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                        backgroundColor: Colors.amber,
+                        child: Container(
+                          height: 100,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text("Generating Prescription"),
+                                CircularProgressIndicator(
+                                  strokeWidth: 8,
+                                )
+                              ],
                             ),
                           ),
-                        );
-                      });
-//                  Navigator.push(context, MaterialPageRoute(builder: (context)
-//                  {
-//                    return ExtraRemarks(); // jahaan bhi jaana hai chale jaana
-//                  }));
-                },
+                        ),
+                      );
+                    });
+                var p = await document.generate();
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ShowPrescription(p);
+                }));
+              },
               )
             ]),
 
